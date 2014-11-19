@@ -13,8 +13,7 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
-  -->
-
+-->
 <resources>
 
     <string name="app_name">Filmi</string>
@@ -29,5 +28,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="columns">1</string>
     <string name="title_activity_leanback">LeanbackActivity</string>
+    <string name="title_activity_video_details">VideoDetailsActivity</string>
 
+    <string name="action_play">PLAY</string>
+    <string name="action_watch_later">WATCH LATER</string>
 </resources>
