@@ -23,6 +23,9 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v17.leanback.database.CursorMapper;
+import android.support.v17.leanback.widget.CursorObjectAdapter;
+import android.support.v17.leanback.widget.ObjectAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,7 @@ public class VideoDataManager implements LoaderManager.LoaderCallbacks<Cursor> {
     protected LoaderManager mLoaderManager;
     protected int LOADER_ID;
     protected Uri mRowUri;
+    private ObjectAdapter mItemList;
 
     public List<Video> getVideos() {
         return videos;
@@ -63,14 +67,17 @@ public class VideoDataManager implements LoaderManager.LoaderCallbacks<Cursor> {
             VideoItemContract.VideoItemColumns.CONTENT_URL,
     };
 
-    public VideoDataManager(Context mContext, LoaderManager mLoaderManager, Uri mRowUri) {
+    public VideoDataManager(Context mContext, LoaderManager mLoaderManager, Uri mRowUri, ObjectAdapter rowContents) {
         this.mLoaderManager = mLoaderManager;
         this.mRowUri = mRowUri;
         this.mContext = mContext;
         LOADER_ID = mRowUri.hashCode();
         mMapper = new VideoItemMapper();
         videos = new ArrayList<Video>();
+        mItemList = rowContents;
 
+        LOADER_ID = Double.valueOf(Math.random() * Integer.MAX_VALUE).intValue();
+        ((CursorObjectAdapter)mItemList).setMapper(mMapper);
     }
 
     public void startDataLoading() {
@@ -88,17 +95,26 @@ public class VideoDataManager implements LoaderManager.LoaderCallbacks<Cursor> {
     }
 
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        mMapper.bindColumns(cursor);
-        while (cursor.moveToNext()) {
-            videos.add(mMapper.bind(cursor));
+        if (mItemList instanceof CursorObjectAdapter) {
+            ((CursorObjectAdapter) mItemList).swapCursor(cursor);
         }
+//        mMapper.bindColumns(cursor);
+//        while (cursor.moveToNext()) {
+//            videos.add(mMapper.bind(cursor));
+//        }
     }
 
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
+        if (mItemList instanceof CursorObjectAdapter) {
+            ((CursorObjectAdapter) mItemList).swapCursor(null);
+        }
     }
 
-    public static class VideoItemMapper {
+    public ObjectAdapter getItemList() {
+        return mItemList;
+    }
+
+    public static class VideoItemMapper extends CursorMapper {
 
         private int[] mColumnMap;
         private static final int ID = 0;
