@@ -33,6 +33,7 @@ import java.io.Serializable;
  * Created by eric on 19/11/14.
  */
 public class VideoDetailsFragment extends DetailsFragment {
+    BackgroundHelper bgHelper;
     private Video selectedVideo;
     private static final int DETAIL_THUMB_WIDTH = 274;
     private static final int DETAIL_THUMB_HEIGHT = 274;
@@ -46,6 +47,9 @@ public class VideoDetailsFragment extends DetailsFragment {
                 .getIntent()
                 .getSerializableExtra(Video.INTENT_EXTRA_VIDEO);
         new DetailRowBuilderTask().execute(selectedVideo);
+        bgHelper = new BackgroundHelper(getActivity());
+        bgHelper.prepareBackgroundManager();
+        bgHelper.updateBackground(selectedVideo.getThumbUrl());
     }
 
     private class DetailRowBuilderTask extends AsyncTask<Video, Integer, DetailsOverviewRow> {
